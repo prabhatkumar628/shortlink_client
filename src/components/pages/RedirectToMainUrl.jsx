@@ -8,11 +8,11 @@ const RedirectToMainUrl = () => {
     if (!shortId) return;
 
     window.location.replace(
-      `/api/v1/urls/${shortId}`
+      `${import.meta.env.VITE_BACKEND_URL}/api/v1/urls/${shortId}`
     );
   }, [shortId]);
 
-  return null; 
+  return null;
 };
 
 export { RedirectToMainUrl };
