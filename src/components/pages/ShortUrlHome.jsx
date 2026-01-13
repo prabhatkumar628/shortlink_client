@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useCreateUrl, useGetUrls } from "../../hooks/useUrl.js";
+import { useCreateUrl, useDeleteUrls, useGetUrls } from "../../hooks/useUrl.js";
 import { Link } from "react-router-dom";
 import { FiCopy, FiCheck, FiExternalLink } from "react-icons/fi";
 import Layout from "../layout/Layout.jsx";
@@ -7,6 +7,7 @@ import Loader from "../loader/Loader.jsx";
 import { useAuth } from "../../context/AuthContext.js";
 import { HiOutlineChartBar } from "react-icons/hi2";
 import { FiX } from "react-icons/fi";
+import { MdDeleteOutline } from "react-icons/md";
 
 export default function ShortUrlHome() {
   const [urlName, setUrlName] = useState("");
@@ -19,6 +20,11 @@ export default function ShortUrlHome() {
 
   const { data } = useGetUrls();
   const { mutate, isPending, isError, error } = useCreateUrl();
+  const { mutate: deleteUrls, isPending: deletePending } = useDeleteUrls();
+
+  const handleDelete = (id) => {
+    deleteUrls(id);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,7 +41,7 @@ export default function ShortUrlHome() {
   return (
     <>
       <Layout>
-        {isPending && <Loader />}
+        {(isPending || deletePending) && <Loader />}
         <div className="flex items-center justify-center ">
           <div className="w-full max-w-3xl">
             {/* Header */}
@@ -115,7 +121,13 @@ export default function ShortUrlHome() {
                     </div>
 
                     {/* Actions */}
-                    <div className="col-span-12 sm:col-span-6 flex items-center justify-center gap-3">
+                    <div
+                      className={`col-span-12 sm:col-span-6 ${
+                        !isLoading && isAuthenticated
+                          ? "grid-cols-2"
+                          : "grid-cols-3"
+                      } grid items-center justify-center gap-3`}
+                    >
                       {/* Copy Button */}
                       <button
                         onClick={() => {
@@ -123,7 +135,7 @@ export default function ShortUrlHome() {
                           setCopied(shortUrl);
                           setTimeout(() => setCopied(null), 1500);
                         }}
-                        className={`flex items-center gap-2 px-2 sm:px-4 py-2 rounded-lg text-sm font-semibold transition
+                        className={`flex items-center justify-center gap-2 px-2 sm:px-4 py-2 rounded-lg text-sm font-semibold transition
                                   ${
                                     copied === shortUrl
                                       ? "bg-green-500 text-black"
@@ -148,7 +160,7 @@ export default function ShortUrlHome() {
                         to={shortUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-2 sm:px-4 py-2 rounded-lg border border-white/20 text-sm font-semibold text-white hover:bg-white/10 transition"
+                        className="flex items-center justify-center gap-2 px-2 sm:px-4 py-2 rounded-lg border border-white/20 text-sm font-semibold text-white hover:bg-white/10 transition"
                       >
                         <FiExternalLink className="text-base" />
                         Open
@@ -161,7 +173,7 @@ export default function ShortUrlHome() {
                               setSelectedUrl(data); // 👈 current row ka data
                               setOpen(true);
                             }}
-                            className="flex items-center gap-2 px-2 sm:px-4 py-2 rounded-lg
+                            className="flex items-center justify-center gap-2 px-2 sm:px-4 py-2 rounded-lg
                                border border-white/20 text-sm font-semibold text-white
                                bg-white/5 hover:bg-white/10 backdrop-blur-md
                                transition-all duration-200"
@@ -178,6 +190,16 @@ export default function ShortUrlHome() {
                           )}
                         </>
                       )}
+                      <button
+                        onClick={() => handleDelete(data._id)}
+                        className="flex items-center justify-center gap-2 px-2 sm:px-4 py-2 rounded-lg bg-white/5
+                          border border-white/10 text-sm font-semibold  backdrop-blur-md  duration-200
+                          text-red-400 hover:bg-red-500/10 hover:text-red-500 transition"
+                        title="Delete URL"
+                      >
+                        <MdDeleteOutline className="text-lg min-w-fit" />
+                        Delete
+                      </button>
                     </div>
                   </div>
                 );

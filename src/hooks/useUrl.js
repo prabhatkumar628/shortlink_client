@@ -11,13 +11,18 @@ const getUrls = async () => {
   return response.data;
 };
 
+const deleteById = async (id) => {
+  const response = await api.delete(`/urls/${id}`);
+  return response.data;
+};
+
 export const useCreateUrl = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: createUrl,
-    onSuccess:()=>{
-      queryClient.invalidateQueries({queryKey:["urls"]})
-    }
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["urls"] });
+    },
   });
 };
 
@@ -25,5 +30,15 @@ export const useGetUrls = () => {
   return useQuery({
     queryKey: ["urls"],
     queryFn: getUrls,
+  });
+};
+
+export const useDeleteUrls = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => deleteById(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["urls"] });
+    },
   });
 };
