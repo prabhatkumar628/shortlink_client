@@ -11,8 +11,10 @@ export default function Loader({ text = "Loading" }) {
 
           {/* Logo */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-10 h-10 rounded-xl bg-cyan-400 flex items-center justify-center">
-              <span className="text-black font-extrabold text-lg">S</span>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+             <div className=" flex items-center justify-center shadow-cyan-400/30">
+                <img src="/symbol2.png" alt="logo" />
+              </div>
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Layout from "../../layout/Layout.jsx";
-import { useLogin } from "../../../hooks/useAuth.js";
+import { useLogin, useMe } from "../../../hooks/useAuth.js";
 import Loader from "../../loader/Loader.jsx";
 
 export default function Login() {
@@ -9,6 +9,13 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const navigater = useNavigate();
   const { mutate: login, isPending, isError, error } = useLogin();
+  const { data } = useMe();
+
+  useEffect(() => {
+    if (data?.data !== null) {
+      navigater("/");
+    }
+  }, [data, navigater]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
